@@ -57,11 +57,6 @@ export function RevenueCopilot() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const getRandomTimeout = () => {
-    const timeouts = [2000, 3000, 4000, 5000];
-    return timeouts[Math.floor(Math.random() * timeouts.length)];
-  };
   
   const handleSend = async (question: string = input) => {
     if (question.trim() && !isLoading) {
