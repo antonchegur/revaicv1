@@ -23,7 +23,7 @@ export function RevenueCopilot() {
 
   const presetQuestions = [
     "Why we lose deals?",
-    "Tell me top-3 worst sales reps?",
+    "Tell me bottom-3 sales reps?",
     "How many contracts we will sign in this month?"
   ];
 
