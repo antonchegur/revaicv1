@@ -46,7 +46,7 @@ I need you to simulate Revaic with CRM data of Parqour.
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { prompt } = req.body; // Expecting a 'prompt' in the request body
-    console.log(req);
+    console.error(req);
     try {
       const response = await client.chat.completions.create({
         model: 'gpt-4o',
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     } catch (error) {
       res.status(500).json({ error: 'Error fetching completion from OpenAI' });
       console.error('Error creating chat completion:', error);
-    }   
+    }
   } else {
     res.status(405).json({ message: 'Only POST requests allowed' });
   }
