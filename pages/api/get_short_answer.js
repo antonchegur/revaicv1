@@ -44,25 +44,62 @@ I need you to simulate Revaic with CRM data of Parqour.
 `;
 
 export default async function handler(req, res) {
-    console.log(req);
     if (req.method === 'POST') {
         const { prompt } = req.body; // Expecting a 'prompt' in the request body
-        console.log('Question from client: ', req.body);
+        console.log('Question from client:', req.body);
+    
+        // Validate 'prompt' input
+        if (!prompt || typeof prompt !== 'string') {
+            res.status(400).json({ error: "Invalid input: 'prompt' must be a non-null string." });
+            console.error("Invalid 'prompt' provided:", prompt);
+            return;
+        }
+    
+        // Ensure 'instructions_to_model' is defined and valid
+        if (!instructions_to_model || typeof instructions_to_model !== 'string') {
+            res.status(500).json({ error: "Server error: 'instructions_to_model' is not properly defined." });
+            console.error("Invalid 'instructions_to_model' provided:", instructions_to_model);
+            return;
+        }
+    
         try {
             const response = await client.chat.completions.create({
-                model: 'gpt-4o',
+                model: 'gpt-4', // Corrected the model name
                 messages: [
-                { role: 'system', content: instructions_to_model },
-                { role: 'user', content: prompt }
+                    { role: 'system', content: instructions_to_model },
+                    { role: 'user', content: prompt },
                 ],
             });
-            console.log('Response from OpenAI API: ', response);
-            res.status(200).json({ completion: response.choices[0].message.content });
+    
+            console.log('Response from OpenAI API:', response);
+    
+            // Check if the response contains the expected data
+            if (
+                response &&
+                response.choices &&
+                response.choices.length > 0 &&
+                response.choices[0].message &&
+                response.choices[0].message.content
+            ) {
+                res.status(200).json({ completion: response.choices[0].message.content });
+            } else {
+                res.status(500).json({ error: 'Invalid response structure from OpenAI API.' });
+                console.error('Invalid response structure:', response);
+            }
         } catch (error) {
-            res.status(500).json({ error: 'Error fetching completion from OpenAI' });
-            console.error('Error creating chat completion:', error);
+            // Improved error handling
+            if (error.response) {
+                // API returned an error response
+                res.status(error.response.status).json(error.response.data);
+                console.error('API Error:', error.response.status, error.response.data);
+            } else {
+                // Other errors (e.g., network issues)
+                res.status(500).json({ error: error.message });
+                console.error('Error creating chat completion:', error.message);
+            }
         }
     } else {
-        res.status(405).json({ message: 'Only POST requests allowed' });
-    }
+        res.status(405).json({ message: 'Only POST requests are allowed.' });
+        console.warn('Received a non-POST request.');
+    }    
 }
