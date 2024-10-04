@@ -47,6 +47,7 @@ export default async function handler(req, res) {
     console.log(req);
     if (req.method === 'POST') {
         const { prompt } = req.body; // Expecting a 'prompt' in the request body
+        console.log(req);
         try {
         const response = await client.chat.completions.create({
             model: 'gpt-4o',
@@ -56,7 +57,6 @@ export default async function handler(req, res) {
             ],
         });
         res.status(200).json({ completion: response.choices[0].message.content });
-        console.log(response.choices[0].message.content);
         } catch (error) {
         res.status(500).json({ error: 'Error fetching completion from OpenAI' });
         console.error('Error creating chat completion:', error);
