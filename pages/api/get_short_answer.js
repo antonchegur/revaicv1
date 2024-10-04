@@ -46,6 +46,7 @@ I need you to simulate Revaic with CRM data of Parqour.
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { prompt } = req.body; // Expecting a 'prompt' in the request body
+    console.log(req);
     try {
       const response = await client.chat.completions.create({
         model: 'gpt-4o',
