@@ -44,24 +44,24 @@ I need you to simulate Revaic with CRM data of Parqour.
 `;
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { prompt } = req.body; // Expecting a 'prompt' in the request body
-    console.error(req);
-    try {
-      const response = await client.chat.completions.create({
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: instructions_to_model },
-          { role: 'user', content: prompt }
-        ],
-      });
-      res.status(200).json({ completion: response.choices[0].message.content });
-      console.log(response.choices[0].message.content);
-    } catch (error) {
-      res.status(500).json({ error: 'Error fetching completion from OpenAI' });
-      console.error('Error creating chat completion:', error);
+    console.log(req);
+    if (req.method === 'POST') {
+        const { prompt } = req.body; // Expecting a 'prompt' in the request body
+        try {
+        const response = await client.chat.completions.create({
+            model: 'gpt-4o',
+            messages: [
+            { role: 'system', content: instructions_to_model },
+            { role: 'user', content: prompt }
+            ],
+        });
+        res.status(200).json({ completion: response.choices[0].message.content });
+        console.log(response.choices[0].message.content);
+        } catch (error) {
+        res.status(500).json({ error: 'Error fetching completion from OpenAI' });
+        console.error('Error creating chat completion:', error);
+        }
+    } else {
+        res.status(405).json({ message: 'Only POST requests allowed' });
     }
-  } else {
-    res.status(405).json({ message: 'Only POST requests allowed' });
-  }
 }
