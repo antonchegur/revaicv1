@@ -22,9 +22,9 @@ export function RevenueCopilot() {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const presetQuestions = [
-    "Why we lose deals?",
+    "Why do we lose deals?",
     "Tell me bottom-3 sales reps?",
-    "How many contracts we will sign in this month?"
+    "How many contracts we will sign this month?"
   ];
 
   useEffect(() => {
